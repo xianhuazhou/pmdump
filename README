@@ -1,6 +1,6 @@
 Introduction:
 
-A library can be used to dump mysql database into a SQL file just like mysqldump does, but it never lock any tables. If the table is changed when dumping, so the final data dumped from the library is not the same origin database.
+A library can be used to dump mysql database into a SQL file just like mysqldump does, but it never lock any tables. If the table is changed when dumping, the final data dumped with the library will be not as same as the origin database.
 
 BTW: The mysql account only need the "SELECT" permission.
 
