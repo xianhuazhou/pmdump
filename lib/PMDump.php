@@ -96,7 +96,7 @@ class PMDump {
         $stmt->execute();
         $fields = array();
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $fields[] = $row['Field'];
+            $fields[] = "`" . $row['Field'] . "`";
         }
 
         return $fields;
