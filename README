@@ -10,7 +10,17 @@ Usage:
 require '/path/to/pmdump/lib/PMDump.php';
 
 $pdo = new PDO('mysql:dbname=test;host=localhost', 'mysqluser', 'pa$$W0rd');
-$pmdump = new PMDump($pdo, array('limit_per_select' => 1000, 'add_drop_table' => true), 'UTF8);
+$pmdump = new PMDump($pdo, array(
+
+    # LIMIT number of rows per query
+    'limit_per_select' => 500, 
+
+    // add "DROP TABLE ..."
+    'add_drop_table' => true,
+
+    // add tables need ignored
+    'excluded_tables' => array(),
+), 'UTF8);
 $pmdump->dump('database_name_here', '/path/to/file.sql');
 ?>
 

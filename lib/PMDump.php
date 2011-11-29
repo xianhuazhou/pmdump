@@ -16,6 +16,7 @@ class PMDump {
      * @param array $options
      *            int   limit_per_select =>  max number of rows per select
      *            bool  add_drop_table   =>  add "DROP TABLE IF EXISTS $table" or not
+     *            array excluded_tables  =>  skip tables
      *              
      * @param string $charset
      *
@@ -25,8 +26,9 @@ class PMDump {
         $this->pdo = $pdo;
         $this->pdo->exec('SET NAMES ' . $charset);
         $this->options = array_merge(array(
-            'limit_per_select' =>  1000,
-            'add_drop_table' => true 
+            'limit_per_select' =>  500,
+            'add_drop_table' => true,
+            'excluded_tables' => array()
         ), $options);
     }
 
@@ -40,8 +42,8 @@ class PMDump {
      */
     public function dump($database, $file)
     {
-        $addDropTable = isset($this->options['add_drop_table']) && 
-            $this->options['add_drop_table'];
+        $addDropTable = $this->options['add_drop_table'];
+        $excludedTables = $this->options['excluded_tables'];
 
         $this->pdo->exec('USE ' . $database);
         $tables = $this->tables($database); 
@@ -53,7 +55,9 @@ class PMDump {
                 $this->writeFile($file, 'DROP TABLE IF EXISTS ' . $table . ';');
             }
             $this->dumpTableStructure($table, $file);
-            $this->dumpTableData($table, $file);
+            if (!in_array($table, $excludedTables)) {
+                $this->dumpTableData($table, $file);
+            }
             $this->writeFile($file, "");
         }
         $this->writeFile($file, "\nSET FOREIGN_KEY_CHECKS = 1;");

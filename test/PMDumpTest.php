@@ -30,8 +30,16 @@ class PMDumpTest extends PHPUnit_Framework_TestCase {
         $pmDump->dump(Helper::TEST_DB_NAME, $this->file);
         $data = file_get_contents($this->file);
         $this->assertTrue('' !== $data);
-        $this->assertTrue(false !== strpos($data, 't1'));
-        $this->assertTrue(false !== strpos($data, 't2'));
+        $this->assertTrue(false !== strpos($data, 'INSERT INTO `t1`'));
+        $this->assertTrue(false !== strpos($data, 'INSERT INTO `t2`'));
+
+        // excluded tables
+        file_put_contents($this->file, '');
+        $pmDump = new PMDump($this->pdo, array('excluded_tables' => array('t1')));
+        $pmDump->dump(Helper::TEST_DB_NAME, $this->file);
+        $data = file_get_contents($this->file);
+        $this->assertTrue(false === strpos($data, 'INSERT INTO `t1`'));
+        $this->assertTrue(false !== strpos($data, 'INSERT INTO `t2`'));
     }
 }
 
